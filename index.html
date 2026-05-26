@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My App</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+        th { background: #4a90d9; color: white; }
+        td, th { padding: 8px 12px; text-align: left; }
+        tr:nth-child(even) { background: #f2f2f2; }
+        button { margin: 4px; padding: 8px 14px; cursor: pointer; }
+        #result-container { margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<h2>Hello!</h2>
+
+<!-- =====================================================
+     SECTION: SELECT
+     Each button calls runSelect() with:
+       1. the query name from $SELECT_QUERIES in queries.php
+       2. the id of the div where the table will appear
+====================================================== -->
+<h3>SELECT</h3>
+
+<select id="table-select">
+    <option value="customer">Customers</option>
+    <option value="product">Products</option>
+    <option value="supplier">Suppliers</option>
+    <option value="orders">Orders</option>
+    <option value="payment">Payments</option>
+    <option value="deliverystock">Delivery Stock</option>
+</select>
+
+<button onclick="runSelect('get_table', 'result-container')">
+    Fetch Table
+</button>
+
+<!-- Add more SELECT buttons here, following the same pattern -->
+
+<!-- =====================================================
+     SECTION: DELETE
+     runDelete() takes the query name and an array of
+     values for the ? placeholders in that query.
+     After deleting, we re-run the SELECT to refresh the table.
+====================================================== -->
+
+<!--
+<h3>DELETE</h3>
+
+<button onclick="handleDelete()">Delete Item (id = 1)</button>
+
+<script>
+async function handleDelete() {
+    // params array matches the ? placeholders in 'delete_item_by_id'
+    const affected = await runDelete('delete_item_by_id', [1]);
+    alert(`Deleted ${affected} row(s).`);
+    // Refresh the table after deletion
+    runSelect('get_all_items', 'result-container');
+}
+</script>
+-->
+
+<!-- =====================================================
+     SECTION: UPDATE
+     runUpdate() takes the query name and an array of
+     values for the ? placeholders in that query.
+     Order must match the order of ? in the SQL.
+====================================================== -->
+
+<!--
+<h3>UPDATE</h3>
+
+<button onclick="handleUpdate()">Rename Item (id = 1)</button>
+
+<script>
+async function handleUpdate() {
+    // 'update_item_name' SQL:  UPDATE ... SET name = ? WHERE id = ?
+    //  params order:           [name_value,  id_value]
+    const affected = await runUpdate('update_item_name', ['Updated Name', 1]);
+    alert(`Updated ${affected} row(s).`);
+    // Refresh the table after update
+    runSelect('get_all_items', 'result-container');
+}
+</script>
+-->
+
+<!-- =====================================================
+     TABLE OUTPUT
+     renderTable() / runSelect() write into this div.
+====================================================== -->
+<div id="result-container">
+    <!-- Results appear here -->
+</div>
+
+
+<!-- Load the shared table renderer + API helper functions -->
+<script src="js/table-renderer.js">
+    runSelect('customer', 'result-container');
+</script>
+
+</body>
+</html>
