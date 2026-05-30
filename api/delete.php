@@ -14,7 +14,6 @@
 //   { "affected_rows": 1 }
 //   { "error": "message" }   ← on failure
 // -------------------------------------------------------
-
 header('Content-Type: application/json');
 
 require_once '../db.php';
@@ -46,9 +45,7 @@ if (!$stmt) {
 // Bind parameters dynamically using the type string from queries.php (e.g. 'i', 'si', 'ss')
 if (!empty($params)) {
     // bind_param needs variables passed by reference, so we use a ref-array trick
-    $refs = [$entry['types']];
-    foreach ($params as &$p) $refs[] = &$p;
-    call_user_func_array([$stmt, 'bind_param'], $refs);
+    $stmt->bind_param($entry['types'], ...$params);
 }
 
 $stmt->execute();

@@ -39,21 +39,9 @@
      After deleting, we re-run the SELECT to refresh the table.
 ====================================================== -->
 
-<!--
 <h2>DELETE</h2>
 
 <button onclick="handleDelete()">Delete Item (id = 1)</button>
-
-<script>
-async function handleDelete() {
-    // params array matches the ? placeholders in 'delete_item_by_id'
-    const affected = await runDelete('delete_item_by_id', [1]);
-    alert(`Deleted ${affected} row(s).`);
-    // Refresh the table after deletion
-    runSelect('get_all_items', 'result-container');
-}
-</script>
--->
 
 <!-- =====================================================
      SECTION: UPDATE
@@ -62,22 +50,9 @@ async function handleDelete() {
      Order must match the order of ? in the SQL.
 ====================================================== -->
 
-<!--
 <h2>UPDATE</h2>
 
 <button onclick="handleUpdate()">Rename Item (id = 1)</button>
-
-<script>
-async function handleUpdate() {
-    // 'update_item_name' SQL:  UPDATE ... SET name = ? WHERE id = ?
-    //  params order:           [name_value,  id_value]
-    const affected = await runUpdate('update_item_name', ['Updated Name', 1]);
-    alert(`Updated ${affected} row(s).`);
-    // Refresh the table after update
-    runSelect('get_all_items', 'result-container');
-}
-</script>
--->
 
 <!-- =====================================================
      TABLE OUTPUT
@@ -87,10 +62,28 @@ async function handleUpdate() {
     <!-- Results appear here -->
 </div>
 
-
 <!-- Load the shared table renderer + API helper functions -->
-<script src="js/table-renderer.js">
-    runSelect('customer', 'result-container');
+<script src="js/table-renderer.js"></script>
+
+<script>
+async function handleDelete() {
+    // 'delete_table_item' SQL:  DELETE FROM ... WHERE id = ?
+    const affected = await runDelete('delete_table_item', [1]);
+    alert(`Deleted ${affected} row(s).`);
+    // Refresh the table after deletion
+    runSelect('get_table', 'result-container');
+}
+
+async function handleUpdate() {
+    // 'update_item_name' SQL:  UPDATE ... SET name = ? WHERE id = ?
+    //  params order:           [name_value,  id_value]
+    const affected = await runUpdate('update_item_name', ['Updated Name', 1]);
+    alert(`Updated ${affected} row(s).`);
+    // Refresh the table after update
+    runSelect('get_all_items', 'result-container');
+}
+
+runSelect('customer', 'result-container');
 </script>
 
 </body>

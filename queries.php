@@ -42,16 +42,20 @@ $SELECT_QUERIES = [
 
 $DELETE_QUERIES = [
 
-    'delete_item_by_id' => [
-        'sql'    => "DELETE FROM placeholder_table WHERE id = ?",
+    'customer' => [
+        'sql'    => "DELETE FROM customer WHERE Cust_ID = ?",
         'types'  => 'i',   // one integer param
     ],
 
-    // 'delete_by_name' => [
-    //     'sql'   => "DELETE FROM my_table WHERE name = ?",
-    //     'types' => 's',
-    // ],
+    'product' => [
+        'sql'    => "DELETE FROM product WHERE Prod_ID = ?",
+        'types'  => 'i',   // one integer param
+    ],
 
+    'supplier' => [
+        'sql'    => "DELETE FROM supplier WHERE Supply_ID = ?",
+        'types'  => 'i',   // one integer param
+    ],
 ];
 
 // ==== UPDATE ============================================
