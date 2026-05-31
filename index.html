@@ -39,9 +39,11 @@
      After deleting, we re-run the SELECT to refresh the table.
 ====================================================== -->
 
+<!--
+Remove this section since its already in the 'View' options
 <h2>DELETE</h2>
 
-<button onclick="handleDelete()">Delete Item (id = 1)</button>
+<button onclick="handleDelete()">Delete Item (id = 1)</button-->
 
 <!-- =====================================================
      SECTION: UPDATE
@@ -50,9 +52,11 @@
      Order must match the order of ? in the SQL.
 ====================================================== -->
 
+<!--
+Remove this section since its already in the 'View' options
 <h2>UPDATE</h2>
 
-<button onclick="handleUpdate()">Rename Item (id = 1)</button>
+<button onclick="handleUpdate()">Rename Item (id = 1)</button-->
 
 <!-- =====================================================
      TABLE OUTPUT
@@ -62,25 +66,166 @@
     <!-- Results appear here -->
 </div>
 
+<div id="viewModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-content">
+        <h3 id="modalTitle">Record Options</h3>
+        <hr>
+        
+        <div id="modalDetails" style="text-align: left; margin: 15px 0; font-family: monospace; white-space: pre-wrap; background: #f9f9f9; padding: 10px; border-radius: 6px; display: none;"></div>
+        
+        <div class="modal-buttons">
+            <!--<button id="btnDetails" class="modal-btn info">Show Details</button-->
+            <button id="btnUpdate" class="modal-btn warning">Update Record</button>
+            <button id="btnDelete" class="modal-btn danger">Delete Record</button>
+            <button id="btnClose" class="modal-btn cancel">Close</button>
+        </div>
+    </div>
+</div>
+
 <!-- Load the shared table renderer + API helper functions -->
 <script src="js/table-renderer.js"></script>
 
 <script>
-async function handleDelete() {
+async function handleDelete(currentTable, primaryID)
+{
+    const userConfirmed = confirm(`Are you sure you want to delete this record from ${currentTable}? This action cannot be undone.`);
+    
+    if (!userConfirmed) return; 
+
     // 'delete_table_item' SQL:  DELETE FROM ... WHERE id = ?
-    const affected = await runDelete('delete_table_item', [1]);
-    alert(`Deleted ${affected} row(s).`);
-    // Refresh the table after deletion
-    runSelect('get_table', 'result-container');
+    const affected = await runDelete(currentTable, [primaryID]);
+
+    if (affected > 0)
+    {
+        alert('Record deleted successfully.');
+
+        runSelect(currentTable, 'result-container');
+        return;
+    } else
+    {
+        alert('Failed to delete record. Please try again.');
+    } 
 }
 
-async function handleUpdate() {
-    // 'update_item_name' SQL:  UPDATE ... SET name = ? WHERE id = ?
-    //  params order:           [name_value,  id_value]
-    const affected = await runUpdate('update_item_name', ['Updated Name', 1]);
-    alert(`Updated ${affected} row(s).`);
-    // Refresh the table after update
-    runSelect('get_all_items', 'result-container');
+async function handleUpdate(currentTable, primaryID, oldNameValue)
+{
+    let params = [];
+
+    switch (currentTable)
+    {
+        case 'customer':
+        {
+            const newName = prompt('Enter new customer name:', oldNameValue);
+            if (!newName || newName.trim() === "") return; 
+
+            const newAddress = prompt('Enter new customer address:', '');
+            if (!newAddress || newAddress.trim() === "") return; 
+
+            const newPhoneNum = prompt('Enter new customer phone number:', '');
+            if (!newPhoneNum || newPhoneNum.trim() === "") return; 
+
+            params = [newName, newAddress, newPhoneNum, primaryID]; // Example values
+
+            const affected = await runUpdate(currentTable, params);
+            if (affected > 0)
+            {
+                alert('Customer record updated successfully.');
+                runSelect(currentTable, 'result-container');
+            } else
+            {
+                alert('Failed to update customer record. Please try again.');
+            }
+            break;
+        }
+
+        case 'product':
+        {
+            const newSupplyID = prompt('Enter new supplier ID:', '');
+            if (!newSupplyID || newSupplyID.trim() === "") return;
+            
+            const newName = prompt('Enter new product name:', oldNameValue);
+            if (!newName || newName.trim() === "") return; 
+
+            const newStock = prompt('Enter new product stock quantity:', '');
+            if (newStock === null || newStock.trim() === "") return;
+
+            const newPrice = prompt('Enter new product price:', '');
+            if (!newPrice || newPrice.trim() === "") return; 
+
+            params = [newName, parseInt(newStock), parseFloat(newPrice), newSupplyID, primaryID]; // Example values
+            
+            const affected = await runUpdate(currentTable, params);
+            if (affected > 0)
+            {
+                alert('Product record updated successfully.');
+                runSelect(currentTable, 'result-container');
+            } else
+            {
+                alert('Failed to update product record. Please try again.');
+            }
+            break;
+        }
+
+        case 'supplier':
+        {
+            const newName = prompt('Enter new supplier name:', oldNameValue);
+            if (!newName || newName.trim() === "") return; 
+
+            const newPhoneNum = prompt('Enter new supplier phone number:', '');
+            if (!newPhoneNum || newPhoneNum.trim() === "") return; 
+
+            const newCity = prompt('Enter new supplier city:', '');
+            if (!newCity || newCity.trim() === "") return; 
+
+            const newState = prompt('Enter new supplier state:', '');
+            if (!newState || newState.trim() === "") return; 
+
+            const newZipCode = prompt('Enter new supplier zip code:', '');
+            if (!newZipCode || newZipCode.trim() === "") return; 
+
+            params = [newName, newPhoneNum, newCity, newState, newZipCode, primaryID]; // Example values
+
+            const affected = await runUpdate(currentTable, params);
+            if (affected > 0)
+            {
+                alert('Supplier record updated successfully.');
+                runSelect(currentTable, 'result-container');
+            } else
+            {
+                alert('Failed to update supplier record. Please try again.');
+            }   
+            break;
+        }
+
+        case 'deliverystock':
+        {
+            const newProdID = prompt('Enter new product ID:', '');
+            if (!newProdID || newProdID.trim() === "") return; 
+
+            const newDate = prompt('Enter new delivery date (YYYY-MM-DD):', '');
+            if (!newDate || newDate.trim() === "") return; 
+
+            const newStock = prompt('Enter new delivery stock quantity:', '');
+            if (newStock === null || newStock.trim() === "") return;
+
+            params = [newProdID, newDate, parseInt(newStock), primaryID]; // Example values
+
+            const affected = await runUpdate(currentTable, params);
+            if (affected > 0)
+            {
+                alert('Delivery stock record updated successfully.');
+                runSelect(currentTable, 'result-container');
+            } else
+            {
+                alert('Failed to update delivery stock record. Please try again.');
+            }
+            break;
+        }
+
+        default:
+            alert('Update not implemented for this table.');
+            return;
+    }
 }
 
 runSelect('customer', 'result-container');

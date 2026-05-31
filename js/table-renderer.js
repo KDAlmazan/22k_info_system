@@ -52,6 +52,67 @@ function renderTable(containerId, rows) {
 }
 
 /**
+ * VIEW POP-UP BUTTONS: Delete | Update | Close
+ */
+function ViewOptions(rowJsonString)
+{
+    const row = JSON.parse(rowJsonString);
+    const columns = Object.keys(row);
+    const primaryId = row[columns[0]]; 
+    const currentTable = document.getElementById('table-select').value;
+
+    // Elements
+    const modal = document.getElementById('viewModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDetails = document.getElementById('modalDetails');
+    
+    // Set up text details
+    let detailsText = "";
+    columns.forEach(col =>
+    {
+        detailsText += `<strong>${col}:</strong> ${row[col] ?? ''}\n`;
+    });
+
+    // Reset components & display modal
+    modalTitle.innerText = `Manage ${currentTable.toUpperCase()} (ID: ${primaryId})`;
+    modalDetails.style.display = "none"; 
+    modalDetails.innerHTML = detailsText;
+    modal.style.display = "flex";
+
+    // --- BUTTON EVENT LISTENERS ---
+    
+    // 1. Show Details Button
+    // document.getElementById('btnDetails').onclick = function()
+    // {
+    //     modalDetails.style.display = modalDetails.style.display === "none" ? "block" : "none";
+    // };
+
+    // 2. Update Button
+    document.getElementById('btnUpdate').onclick = async function()
+    {
+        modal.style.display = "none"; // Close modal early
+
+        const oldNameValue = row[columns[1]] || '';
+
+        await handleUpdate(currentTable, primaryId, oldNameValue);
+    };
+
+    // 3. Delete Button
+    document.getElementById('btnDelete').onclick = function()
+    {
+        modal.style.display = "none"; // Close modal early
+        
+        handleDelete(currentTable, primaryId);
+    };
+
+    // 4. Close Button
+    document.getElementById('btnClose').onclick = function()
+    {
+        modal.style.display = "none";
+    };
+}
+
+/**
  * Prevents XSS by escaping special HTML characters before
  * inserting any database value into the page.
  */

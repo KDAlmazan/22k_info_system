@@ -17,7 +17,8 @@
 // No parameters needed — just write the full query.
 // Key = the name you pass as ?query= in your JS fetch call.
 
-$SELECT_QUERIES = [
+$SELECT_QUERIES =
+[
 
     'customer' =>
         "SELECT *
@@ -32,6 +33,10 @@ $SELECT_QUERIES = [
     'supplier' =>
         "SELECT * FROM supplier",
 
+    'deliverystock' =>
+        "SELECT *
+        FROM deliverystock",
+
     // Add your own SELECT queries below:
     // 'my_query_name' => "SELECT col1, col2 FROM my_table WHERE ...",
 
@@ -40,20 +45,30 @@ $SELECT_QUERIES = [
 // ==== DELETE ============================================
 // Use ? for values that come from the user/frontend.
 
-$DELETE_QUERIES = [
+$DELETE_QUERIES =
+[
 
-    'customer' => [
+    'customer' =>
+    [
         'sql'    => "DELETE FROM customer WHERE Cust_ID = ?",
         'types'  => 'i',   // one integer param
     ],
 
-    'product' => [
+    'product' =>
+    [
         'sql'    => "DELETE FROM product WHERE Prod_ID = ?",
         'types'  => 'i',   // one integer param
     ],
 
-    'supplier' => [
+    'supplier' =>
+    [
         'sql'    => "DELETE FROM supplier WHERE Supply_ID = ?",
+        'types'  => 'i',   // one integer param
+    ],
+
+    'deliverystock' =>
+    [
+        'sql'    => "DELETE FROM deliverystock WHERE DStock_ID = ?",
         'types'  => 'i',   // one integer param
     ],
 ];
@@ -61,11 +76,31 @@ $DELETE_QUERIES = [
 // ==== UPDATE ============================================
 // List SET column params first, then the WHERE param(s) last.
 
-$UPDATE_QUERIES = [
+$UPDATE_QUERIES =
+[
 
-    'update_item_name' => [
-        'sql'   => "UPDATE placeholder_table SET name = ? WHERE id = ?",
-        'types' => 'si',  // string, then integer
+    'customer' =>
+    [
+        'sql'   => "UPDATE customer SET Cust_Name = ?, Cust_Address = ?, Cust_PhoneNum = ? WHERE Cust_ID = ?",
+        'types' => 'sssi',  // string, string, string, then integer
+    ],
+
+    'product' =>
+    [
+        'sql'   => "UPDATE product SET Supply_ID = ?, Prod_Name = ?, Prod_Stock = ?, Prod_Price = ? WHERE Prod_ID = ?",
+        'types' => 'isidi',  // string, integer, double, integer, then integer
+    ],
+
+    'supplier' =>
+    [
+        'sql'   => "UPDATE supplier SET Supply_Name = ?, Supply_PhoneNum = ?, Supply_City = ?, Supply_State = ?, Supply_ZipCode = ? WHERE Supply_ID = ?",
+        'types' => 'ssssii',  // string, string, string, string, string, then integer
+    ],
+
+    'deliverystock' =>
+    [
+        'sql'   => "UPDATE deliverystock SET Prod_ID = ?, DStock_Date = ?, DStock_Stock = ? WHERE DStock_ID = ?",
+        'types' => 'isii',  // integer, integer, integer, string, then integer
     ],
 
     // 'update_status' => [
