@@ -14,10 +14,12 @@
  * @param {string} containerId  - id of the target <div>
  * @param {Array}  rows         - array of objects (from SELECT response)
  */
-function renderTable(containerId, rows) {
+function renderTable(containerId, rows)
+{
     const container = document.getElementById(containerId);
 
-    if (!rows || rows.length === 0) {
+    if (!rows || rows.length === 0)
+    {
         container.innerHTML = '<p>No results found.</p>';
         return;
     }
@@ -29,7 +31,8 @@ function renderTable(containerId, rows) {
 
     // --- Header ---
     html += '<thead><tr>';
-    columns.forEach(col => {
+    columns.forEach(col =>
+    {
         html += `<th>${escapeHtml(col)}</th>`;
     });
     html += '<th>Options</th>'
@@ -37,13 +40,18 @@ function renderTable(containerId, rows) {
 
     // --- Body ---
     html += '<tbody>';
-    rows.forEach(row => {
+    rows.forEach(row =>
+    {
         html += '<tr>';
-        columns.forEach(col => {
+        columns.forEach(col =>
+        {
             // Use ?? '' so null values display as empty string
             html += `<td>${escapeHtml(String(row[col] ?? ''))}</td>`;
         });
-        html += '<td><button>View</button></td>'
+
+        const rowDataEscaped = escapeHtml(JSON.stringify(row));
+        html += 
+            `<td><button onclick="ViewOptions('${rowDataEscaped}')">View</button></td>`
         html += '</tr>';
     });
     html += '</tbody></table>';
